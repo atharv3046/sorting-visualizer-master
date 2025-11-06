@@ -440,7 +440,7 @@ for i = n-1 down to 1:
     # --------------------------------------------------------
 # 🔍 Compare All Algorithms
 # --------------------------------------------------------
-with st.expander("⚖ Compare All Algorithms", expanded=False):
+if st.button("Compare All Algorithms"):
     algorithms = {
         "Bubble Sort": bubble_sort,
         "Insertion Sort": insertion_sort,
@@ -450,47 +450,46 @@ with st.expander("⚖ Compare All Algorithms", expanded=False):
         "Heap Sort": heap_sort
     }
 
-    if st.button("Run Comparison"):
-        results = []
-        for name, algo_func in algorithms.items():
-            test_arr = arr.copy()
-            start_time = time.time()
-            steps, indices = algo_func(test_arr)
-            end_time = time.time()
-            results.append({
-                "Algorithm": name,
-                "Time (s)": round(end_time - start_time, 4),
-                "Steps": len(steps),
-                "Efficiency": round((len(arr) * len(arr)) / len(steps), 2) if steps else 0
-            })
-
-        results_df = pd.DataFrame(results)
-
-        st.markdown("### ⚖ Algorithm Performance Comparison")
-        st.dataframe(
-            results_df.style
-            .highlight_min(subset=["Time (s)", "Steps"], color='lightgreen')
-            .highlight_max(subset=["Efficiency"], color='lightblue')
-        )
-
-        final_df = pd.DataFrame({
-            'index': range(len(steps[-1])),
-            'value': steps[-1],
-            'color': ['green'] * len(steps[-1])
+    results = []
+    for name, algo_func in algorithms.items():
+        test_arr = arr.copy()
+        start_time = time.time()
+        steps, indices = algo_func(test_arr)
+        end_time = time.time()
+        results.append({
+            "Algorithm": name,
+            "Time (s)": round(end_time - start_time, 4),
+            "Steps": len(steps),
+            "Efficiency": round((len(arr) * len(arr)) / len(steps), 2) if steps else 0
         })
 
-        final_chart = alt.Chart(final_df).mark_bar().encode(
-            x=alt.X('index:O', title='Array Index'),
-            y=alt.Y('value:Q', title='Value'),
-            color=alt.Color('color:N', scale=None, legend=None)
-        ).properties(
-            width=600,
-            height=400,
-            title="Final Sorted Array"
-        )
+    results_df = pd.DataFrame(results)
 
-        st.altair_chart(final_chart, use_container_width=True)
+    st.markdown("### ⚖ Algorithm Performance Comparison")
+    st.dataframe(
+        results_df.style
+        .highlight_min(subset=["Time (s)", "Steps"], color='lightgreen')
+        .highlight_max(subset=["Efficiency"], color='lightblue')
+    )
 
+    
+    final_df = pd.DataFrame({
+        'index': range(len(steps[-1])),
+        'value': steps[-1],
+        'color': ['green'] * len(steps[-1])
+    })
+    
+    final_chart = alt.Chart(final_df).mark_bar().encode(
+        x=alt.X('index:O', title='Array Index'),
+        y=alt.Y('value:Q', title='Value'),
+        color=alt.Color('color:N', scale=None, legend=None)
+    ).properties(
+        width=600,
+        height=400,
+        title="Final Sorted Array"
+    )
+    
+    st.altair_chart(final_chart, use_container_width=True)
 
 # --- Detailed explanation for the selected algorithm (AFTER sorting completes) ---
 st.markdown("---")
